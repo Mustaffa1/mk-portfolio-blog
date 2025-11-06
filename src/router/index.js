@@ -5,7 +5,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import PortfolioView from '../views/PortfolioView.vue'
 import BlogView from '../views/BlogView.vue'
-
+import PostDetailView from '../views/PostDetailView.vue' // <-- 1. BU SATIRI EKLEYİN
 
 const router = createRouter({
   // Temiz URL'ler kullan (hash'siz: # olmadan)
@@ -32,6 +32,13 @@ const router = createRouter({
       path: '/blog', 
       name: 'blog',
       component: BlogView
+    },
+    // 2. BU YENİ ROTA BLOĞUNU EKLEYİN
+    {
+      // :slug, "owasp-top-10" gibi herhangi bir metin olabileceğini belirtir
+      path: '/blog/:slug', 
+      name: 'postDetail',
+      component: PostDetailView
     },
   ]
 })

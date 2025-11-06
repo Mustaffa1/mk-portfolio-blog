@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* SİBER GÜVENLİK KARANLIK TEMA AYARI:
+  Tüm sitenin varsayılan arka planını koyu (slate-900)
+  ve varsayılan metin rengini açık gri (slate-300) yap.
+*/
+body {
+  @apply bg-slate-900 text-slate-300;
+}

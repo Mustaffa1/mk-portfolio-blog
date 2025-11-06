@@ -1,10 +1,13 @@
 <template>
   <TheHeader /> 
+  
   <router-view />
-   </template>
+
+  <TheFooter /> 
+</template>
 
 <script setup>
-  // TheHeader component'ini içeri aktar
-  import TheHeader from './components/TheHeader.vue'; 
+  import TheHeader from './components/TheHeader.vue';
+  // TheFooter component'ini içeri aktar
+  import TheFooter from './components/TheFooter.vue'; 
 </script>
-

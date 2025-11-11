@@ -29,37 +29,9 @@
 </template>
 
 <script setup>
-// ... (script kısmı aynı kalır) ...
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-
-// 1. Veriyi Al
-const postsData = ref([
-  {
-    id: 1,
-    slug: 'webden-siber-guvenlige',
-    title: 'Web Geliştirmeden Siber Güvenliğe Geçiş',
-    description: 'Neden web geliştirme kariyerimden siber güvenlik alanına yöneliyorum? Öğrenme sürecim ve hedeflerim üzerine notlar.',
-    category: 'Kariyer',
-    date: '4 Kasım 2025',
-  },
-  {
-    id: 2,
-    slug: 'owasp-top-10',
-    title: 'OWASP Top 10 Nedir? (Geliştirici Gözüyle)',
-    description: 'Güvenli kod yazmanın temeli olan OWASP Top 10 zafiyetlerini bir yazılımcı bakış açısıyla inceliyorum. İlk 3 zafiyet...',
-    category: 'Güvenlik',
-    date: '1 Kasım 2025',
-  },
-  {
-    id: 3,
-    slug: 'ctf-blue-odasi',
-    title: 'İlk CTF Deneyimim: TryHackMe "Blue" Odası',
-    description: 'Bir "Capture The Flag" yarışmasında Windows zafiyetlerini (EternalBlue) kullanarak nasıl yetki yükselttiğimin adım adım çözümü.',
-    category: 'CTF Çözümü',
-    date: '28 Ekim 2025',
-  }
-]);
+import postsData from '../data/posts.js'; // <-- 1. VERİYİ DIŞARIDAN İÇERİ AKTAR
 
 // 2. URL'den 'slug' parametresini al
 const route = useRoute();
@@ -67,7 +39,7 @@ const currentSlug = route.params.slug;
 
 // 3. Doğru Postayı Bul
 const post = computed(() => {
-  return postsData.value.find(p => p.slug === currentSlug) || { title: 'Yazı Bulunamadı', description: '' };
+  // postsData'yı (artık ref değil) doğrudan kullan
+  return postsData.find(p => p.slug === currentSlug) || { title: 'Yazı Bulunamadı', description: '' };
 });
-
 </script>

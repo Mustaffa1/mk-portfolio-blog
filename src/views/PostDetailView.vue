@@ -14,11 +14,17 @@
         </span>
       </div>
 
-      <div class="prose lg:prose-xl max-w-none prose-invert">
+      <div 
+        v-if="post.fullContent"
+        class="prose lg:prose-xl max-w-none prose-invert" 
+        v-html="post.fullContent"
+      >
+        </div>
+      
+      <div v-else class="prose lg:prose-xl max-w-none prose-invert">
         <p class="text-lg text-slate-300 leading-relaxed">
           {{ post.description }}
         </p>
-        
         <p class="mt-6 text-slate-500 italic">
           (Bu yazının tam içeriği (Markdown veya HTML) ileride buraya eklenecektir.)
         </p>
@@ -31,15 +37,12 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import postsData from '../data/posts.js'; // <-- 1. VERİYİ DIŞARIDAN İÇERİ AKTAR
+import postsData from '../data/posts.js'; 
 
-// 2. URL'den 'slug' parametresini al
 const route = useRoute();
 const currentSlug = route.params.slug;
 
-// 3. Doğru Postayı Bul
 const post = computed(() => {
-  // postsData'yı (artık ref değil) doğrudan kullan
   return postsData.find(p => p.slug === currentSlug) || { title: 'Yazı Bulunamadı', description: '' };
 });
 </script>

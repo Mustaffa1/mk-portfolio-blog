@@ -7,7 +7,7 @@
       </span>
 
       <h3 class="text-xl font-semibold text-white mt-3 mb-2 hover:text-cyan-400 transition">
-        <router-link :to="post.url">{{ post.title }}</router-link>
+        <router-link :to="'/blog/' + post.slug">{{ post.title }}</router-link>
       </h3>
       
       <p class="text-slate-400 text-sm mb-4">

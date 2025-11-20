@@ -1,5 +1,5 @@
 # 🛡️ Secure Full-Stack Portfolio & Blog
-
+[![Türkçe README](https://img.shields.io/badge/lang-Türkçe-red.svg)](./README.TR.md)
 > A cybersecurity-focused personal web application built with Vue 3, Serverless Architecture, and Secure Database principles.
 
 ![Project Status](https://img.shields.io/badge/status-live-success)

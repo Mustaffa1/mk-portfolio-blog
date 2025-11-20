@@ -2,49 +2,50 @@
   <main class="min-h-screen pt-20 bg-slate-900">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       
-      <h1 class="text-4xl font-extrabold text-white mb-8 border-b border-slate-700 pb-4">
-        {{ $t('contact.title') }}
+      <h1 data-aos="fade-down" class="text-4xl font-extrabold text-white mb-8 border-b border-slate-700 pb-4">
+        Benimle İletişime Geçin
       </h1>
 
-      <div v-if="formSuccess" class="p-4 mb-4 bg-green-900 border border-green-700 text-green-200 rounded-md">
-        {{ $t('contact.success_msg') }}
+      <div v-if="formSuccess" data-aos="fade-in" class="p-4 mb-4 bg-green-900 border border-green-700 text-green-200 rounded-md">
+        {{ formSuccess }}
       </div>
 
-      <div v-if="formError" class="p-4 mb-4 bg-red-900 border border-red-700 text-red-200 rounded-md">
-        <strong>Error:</strong> {{ formError }}
+      <div v-if="formError" data-aos="fade-in" class="p-4 mb-4 bg-red-900 border border-red-700 text-red-200 rounded-md">
+        <strong>Hata:</strong> {{ formError }}
       </div>
 
-      <form v-if="!formSuccess" @submit.prevent="handleFormSubmit" class="mb-16">
+      <form v-if="!formSuccess" @submit.prevent="handleFormSubmit" class="mb-16" data-aos="fade-up" data-aos-delay="200">
         <div class="space-y-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-slate-300">{{ $t('contact.name_label') }}</label>
+            <label for="name" class="block text-sm font-medium text-slate-300">Adınız</label>
             <input type="text" id="name" v-model="formData.name" required class="form-input" />
           </div>
-          
           <div>
-            <label for="email" class="block text-sm font-medium text-slate-300">{{ $t('contact.email_label') }}</label>
+            <label for="email" class="block text-sm font-medium text-slate-300">Email Adresiniz</label>
             <input type="email" id="email" v-model="formData.email" required class="form-input" />
           </div>
-
           <div>
-            <label for="message" class="block text-sm font-medium text-slate-300">{{ $t('contact.message_label') }}</label>
+            <label for="message" class="block text-sm font-medium text-slate-300">Mesajınız</label>
             <textarea id="message" rows="4" v-model="formData.message" required class="form-input"></textarea>
           </div>
-          
           <div>
-            <button type="submit" :disabled="isLoading" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button 
+              type="submit" 
+              :disabled="isLoading"
+              class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              {{ isLoading ? $t('contact.sending') : $t('contact.submit_btn') }}
+              {{ isLoading ? 'Gönderiliyor...' : 'Mesajı Gönder' }}
             </button>
           </div>
         </div>
       </form>
 
-      <div class="border-t border-slate-700 pt-8">
-        <h2 class="text-2xl font-bold text-white mb-6">{{ $t('contact.social_title') }}</h2>
+      <div class="border-t border-slate-700 pt-8" data-aos="fade-up" data-aos-delay="400">
+        <h2 class="text-2xl font-bold text-white mb-6">Sosyal Medya</h2>
         <div class="flex flex-wrap gap-6">
           
           <a href="https://www.linkedin.com/in/mustafak0paral/" target="_blank" class="social-link group">
@@ -77,33 +78,26 @@
 <script setup>
 import { ref } from 'vue';
 
+// --- Form Mantığı (Değişmedi) ---
 const formData = ref({ name: '', email: '', message: '' });
 const isLoading = ref(false);
 const formError = ref(null);
-const formSuccess = ref(false); // Boolean olarak değiştirdik
+const formSuccess = ref(null);
 
 async function handleFormSubmit() {
   isLoading.value = true;
   formError.value = null;
-  formSuccess.value = false;
-
+  formSuccess.value = null;
   try {
     const response = await fetch('/.netlify/functions/submit-message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData.value),
     });
-
     const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.error || 'Hata oluştu.');
-    }
-
-    // Başarılı olduğunda sadece true yapıyoruz, metni template içindeki $t() hallediyor
-    formSuccess.value = true; 
+    if (!response.ok) throw new Error(result.error || 'Form gönderilirken bir hata oluştu.');
+    formSuccess.value = result.message;
     formData.value = { name: '', email: '', message: '' };
-
   } catch (err) {
     formError.value = err.message;
   } finally {
@@ -113,7 +107,10 @@ async function handleFormSubmit() {
 </script>
 
 <style scoped>
-.form-input { @apply w-full bg-slate-800 border border-slate-700 rounded-md shadow-sm py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500; }
+.form-input {
+  @apply w-full bg-slate-800 border border-slate-700 rounded-md shadow-sm py-2 px-3 text-slate-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500;
+}
 .social-link { @apply flex items-center space-x-3 p-2 rounded-lg transition-all duration-300; }
 .social-icon-bg { @apply flex items-center justify-center w-10 h-10 bg-slate-800 rounded-full text-slate-400 transition-all duration-300; }
 </style>

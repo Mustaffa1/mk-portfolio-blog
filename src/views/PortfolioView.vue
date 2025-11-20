@@ -2,10 +2,11 @@
   <main class="min-h-screen pt-20 bg-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       
-      <h1 class="text-4xl font-extrabold text-white mb-2">
+      <h1 data-aos="fade-down" class="text-4xl font-extrabold text-white mb-2">
         Portfolyo Çalışmalarım
       </h1>
-      <p class="text-lg text-slate-400 mb-8 border-b border-slate-700 pb-4">
+      
+      <p data-aos="fade-up" data-aos-delay="100" class="text-lg text-slate-400 mb-8 border-b border-slate-700 pb-4">
         GitHub hesabımdaki herkese açık (public) projelerim - GitHub API'ı ile canlı çekilmektedir.
       </p>
 
@@ -23,11 +24,14 @@
       </div>
 
       <div v-if="!isLoading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <ProjectCard 
-          v-for="project in projects" 
-          :key="project.id" 
-          :project="project"
-        />
+        <div 
+          v-for="(project, index) in projects" 
+          :key="project.id"
+          data-aos="fade-up"
+          :data-aos-delay="index * 100"
+        >
+          <ProjectCard :project="project" />
+        </div>
       </div>
 
     </div>
@@ -35,52 +39,34 @@
 </template>
 
 <script setup>
-// 1. 'ref' (veriyi tutmak için) ve 'onMounted' (sayfa yüklendiğinde tetiklemek için) import et
 import { ref, onMounted } from 'vue';
 import ProjectCard from '../components/ProjectCard.vue';
 
-// 2. Durum (State) değişkenlerini tanımla
-const projects = ref([]); // Projeleri tutacak boş dizi
-const isLoading = ref(true); // Yüklenme durumu
-const error = ref(null); // Hata mesajı
+const projects = ref([]);
+const isLoading = ref(true);
+const error = ref(null);
 
-// 3. 'onMounted' ile sayfa yüklendiğinde bu fonksiyonu çalıştır
 onMounted(() => {
   fetchGitHubRepos();
 });
 
-// 4. GitHub API'ından veri çekme fonksiyonu
 async function fetchGitHubRepos() {
   try {
-    // 'Mustaffa1' yerine kendi GitHub kullanıcı adınızı yazabilirsiniz
     const response = await fetch('https://api.github.com/users/Mustaffa1/repos?sort=updated&direction=desc');
-    
     if (!response.ok) {
-      throw new Error('GitHub API\'ından veri çekilemedi. Hız limitine (rate limit) takılmış olabilirsiniz.');
+      throw new Error('GitHub API\'ından veri çekilemedi.');
     }
-    
     const repos = await response.json();
-
-    // 5. VERİ DÖNÜŞTÜRME (TRANSFORMATION)
-    // API'dan gelen veriyi, ProjectCard bileşenimizin beklediği formata dönüştür
     projects.value = repos
-      // .filter(repo => !repo.fork) // (Opsiyonel) Forkladığınız projeleri gizler
       .map(repo => ({
         id: repo.id,
-        title: repo.name.replace(/-/g, ' ').replace(/_/g, ' '), // "mk-portfolio-blog" -> "mk portfolio blog"
+        title: repo.name.replace(/-/g, ' ').replace(/_/g, ' '),
         description: repo.description || 'Açıklama bulunmuyor.',
-        
-        // API'dan gelen 'language' ve 'topics' dizisini birleştir, null olanları filtrele
         technologies: [repo.language, ...repo.topics].filter(Boolean), 
-        
-        // API'daki 'homepage' alanı bizim 'demoUrl' alanımızdır. Yoksa '#' koy.
-        imageUrl: `https://via.placeholder.com/600x400?text=${repo.name}`, // Şimdilik yer tutucu
+        imageUrl: `https://via.placeholder.com/600x400?text=${repo.name}`,
         demoUrl: repo.homepage || '#', 
-        
-        // API'daki 'html_url' alanı bizim 'githubUrl' alanımızdır.
         githubUrl: repo.html_url,
       }));
-
   } catch (err) {
     error.value = err.message;
   } finally {

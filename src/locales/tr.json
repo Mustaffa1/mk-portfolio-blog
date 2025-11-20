@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "portfolio": "Portfolyo",
+    "blog": "Blog",
+    "about": "Hakkımda",
+    "contact": "İletişim"
+  },
+  "home": {
+    "hero_title": "Güvenli Kod, Güçlü Gelecek.",
+    "hero_desc": "Merhaba, ben Mustafa. Modern web teknolojilerini siber güvenlik prensipleriyle birleştiriyorum.",
+    "btn_projects": "Projelerimi İncele",
+    "btn_contact": "İletişime Geç",
+    "section_skills": "Neler Yapıyorum?",
+    "section_blog": "Son Yazılar",
+    "section_projects": "Öne Çıkan Projeler",
+    "view_all": "Tümünü Gör"
+  },
+  "about": {
+    "title": "Hakkımda",
+    "name": "Mustafa KOPARAL",
+    "role": "Bilgisayar Mühendisi & Siber Güvenlik Meraklısı",
+    "p1": "Merhaba! Ben Mustafa. Teknolojiye olan tutkumu, bilgisayar mühendisliği eğitimimle birleştirerek modern ve güvenli web uygulamaları geliştirmeye odaklandım.",
+    "p2": "Kariyer hedefim, yazılım geliştirme becerilerimi siber güvenlik alanında derinleştirerek, dijital dünyanın daha güvenli bir yer olmasına katkı sağlamaktır.",
+    "skills_title": "Temel Becerilerim"
+  },
+  "contact": {
+    "title": "Benimle İletişime Geçin",
+    "name_label": "Adınız",
+    "email_label": "Email Adresiniz",
+    "message_label": "Mesajınız",
+    "submit_btn": "Mesajı Gönder",
+    "sending": "Gönderiliyor...",
+    "success_msg": "Mesajınız başarıyla alındı!",
+    "social_title": "Sosyal Medya"
+  },
+  "footer": {
+    "rights": "Tüm Hakları Saklıdır.",
+    "built_with": "Vue 3, Tailwind CSS & Vite ile inşa edildi."
+  }
+}

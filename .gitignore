@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Ortam değişkenlerini ve gizli anahtarları gizle
+.env
+# Local Netlify folder
+.netlify

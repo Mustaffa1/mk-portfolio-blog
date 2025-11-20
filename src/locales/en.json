@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero_title": "Secure Code, Strong Future.",
+    "hero_desc": "Hello, I'm Mustafa. I combine modern web technologies with cybersecurity principles.",
+    "btn_projects": "View Projects",
+    "btn_contact": "Contact Me",
+    "section_skills": "What I Do?",
+    "section_blog": "Latest Posts",
+    "section_projects": "Featured Projects",
+    "view_all": "View All"
+  },
+  "about": {
+    "title": "About Me",
+    "name": "Mustafa KOPARAL",
+    "role": "Computer Engineer & Cybersecurity Enthusiast",
+    "p1": "Hello! I'm Mustafa. I combine my passion for technology with my computer engineering education to focus on developing modern and secure web applications.",
+    "p2": "My career goal is to deepen my software development skills in the field of cybersecurity and contribute to making the digital world a safer place.",
+    "skills_title": "Core Skills"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "name_label": "Your Name",
+    "email_label": "Your Email",
+    "message_label": "Your Message",
+    "submit_btn": "Send Message",
+    "sending": "Sending...",
+    "success_msg": "Your message has been received successfully!",
+    "social_title": "Social Media"
+  },
+  "footer": {
+    "rights": "All Rights Reserved.",
+    "built_with": "Built with Vue 3, Tailwind CSS & Vite."
+  }
+}

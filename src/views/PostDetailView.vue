@@ -32,15 +32,21 @@
           <h3 class="text-lg font-semibold text-cyan-400 mb-4">Bir Yorum Bırak</h3>
           
           <form @submit.prevent="submitComment">
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-slate-400 mb-1">İsim / Rumuz</label>
                 <input v-model="commentForm.author" type="text" required class="form-input" placeholder="Adınız">
               </div>
+              
               <div>
-                <label class="block text-sm font-medium text-slate-400 mb-1">Yorumunuz</label>
-                <textarea v-model="commentForm.body" rows="3" required class="form-input" placeholder="Düşünceleriniz..."></textarea>
+                <label class="block text-sm font-medium text-slate-400 mb-1">Yorum Şifresi (Silmek için)</label>
+                <input v-model="commentForm.user_password" type="password" required class="form-input" placeholder="Şifre belirleyin">
               </div>
+            </div>
+            
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-slate-400 mb-1">Yorumunuz</label>
+              <textarea v-model="commentForm.body" rows="3" required class="form-input" placeholder="Düşünceleriniz..."></textarea>
             </div>
             
             <div class="mt-4 flex items-center justify-between">
@@ -68,8 +74,19 @@
             Henüz yorum yapılmamış. İlk yorumu sen yap!
           </div>
 
-          <div v-else v-for="comment in comments" :key="comment.id" class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
-            <div class="flex justify-between items-start mb-2">
+          <div v-else v-for="comment in comments" :key="comment.id" class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50 group relative">
+            
+            <button 
+              @click="deleteComment(comment.id)"
+              class="absolute top-2 right-2 text-slate-600 hover:text-red-500 transition-colors p-1 opacity-0 group-hover:opacity-100"
+              title="Yorumu Sil"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+
+            <div class="flex justify-between items-start mb-2 pr-8">
               <span class="font-bold text-green-400">{{ comment.author }}</span>
               <span class="text-xs text-slate-500">{{ new Date(comment.created_at).toLocaleDateString('tr-TR') }}</span>
             </div>
@@ -116,17 +133,16 @@ async function loadPostContent() {
 
 // --- YORUM SİSTEMİ MANTIĞI ---
 const comments = ref([]);
-const commentForm = ref({ author: '', body: '' });
+// YENİ: Form verisine 'user_password' eklendi
+const commentForm = ref({ author: '', body: '', user_password: '' });
 const isSubmitting = ref(false);
 const isLoadingComments = ref(false);
 const submitSuccess = ref(false);
 
-// Yorumları Getir (Backend'den)
 async function fetchComments() {
   if (!post.value.slug) return;
   isLoadingComments.value = true;
   try {
-    // Backend fonksiyonunu çağır (Query parametresi olarak slug gönderiyoruz)
     const response = await fetch(`/.netlify/functions/get-comments?slug=${post.value.slug}`);
     const data = await response.json();
     comments.value = data;
@@ -137,7 +153,6 @@ async function fetchComments() {
   }
 }
 
-// Yorum Gönder (Backend'e)
 async function submitComment() {
   isSubmitting.value = true;
   submitSuccess.value = false;
@@ -145,7 +160,8 @@ async function submitComment() {
     const payload = {
       author: commentForm.value.author,
       body: commentForm.value.body,
-      post_slug: post.value.slug // Hangi yazıya yorum yapıldığını belirt
+      post_slug: post.value.slug,
+      user_password: commentForm.value.user_password // YENİ: Şifreyi backend'e gönder
     };
 
     const response = await fetch('/.netlify/functions/submit-comment', {
@@ -155,10 +171,8 @@ async function submitComment() {
 
     if (response.ok) {
       submitSuccess.value = true;
-      commentForm.value = { author: '', body: '' }; // Formu temizle
-      fetchComments(); // Listeyi güncelle
-      
-      // 3 saniye sonra başarı mesajını gizle
+      commentForm.value = { author: '', body: '', user_password: '' }; // Formu temizle
+      fetchComments(); 
       setTimeout(() => submitSuccess.value = false, 3000);
     }
   } catch (error) {
@@ -168,16 +182,39 @@ async function submitComment() {
   }
 }
 
-// Sayfa Yüklendiğinde Çalıştır
+// YENİ: Yorum Silme Fonksiyonu
+async function deleteComment(id) {
+  const password = prompt("Yorumu silmek için şifrenizi girin (Admin veya Kullanıcı Şifresi):");
+  if (!password) return;
+
+  try {
+    const response = await fetch('/.netlify/functions/delete-comment', {
+      method: 'POST',
+      body: JSON.stringify({ commentId: id, password: password }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      alert(result.error); 
+    } else {
+      alert("Yorum başarıyla silindi!");
+      fetchComments(); // Listeyi yenile
+    }
+  } catch (err) {
+    console.error("Silme hatası:", err);
+    alert("Bir hata oluştu.");
+  }
+}
+
 onMounted(() => {
   loadPostContent();
-  fetchComments(); // <-- Yorumları da yükle
+  fetchComments();
 });
 
-// Rota Değiştiğinde (Başka yazıya geçilirse)
 watch(() => route.params.slug, () => {
   loadPostContent();
-  fetchComments(); // <-- Yeni yazının yorumlarını yükle
+  fetchComments();
 });
 </script>
 

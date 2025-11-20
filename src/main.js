@@ -11,7 +11,6 @@ const app = createApp(App)
 app.use(router) // <-- Uygulamaya router'ı ekle
 app.use(i18n)
 app.mount('#app')
-app.mount('#app')
 AOS.init({
   duration: 800, // Animasyon süresi (ms)
   once: true,    // Animasyon sadece bir kere çalışsın (aşağı inip çıkınca tekrar etmesin)
